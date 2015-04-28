@@ -1,3 +1,18 @@
+# site config
+set :site_title, 'Site Title'
+set :site_author, 'Site Author'
+set :site_language, 'en-us'
+set :site_url, 'http://example.com'
+set :site_description, 'Site Description'
+set :site_keywords, 'keywords, home page'
+
+# gem configs
+
+###
+# middleman-livereloader
+###
+activate :livereload
+
 ###
 # Compass
 ###
@@ -14,6 +29,9 @@ require 'susy'
 # Haml
 ###
 
+# Set haml format to HTML5
+set :haml, { :format => :html5 }
+
 # CodeRay syntax highlighting in Haml
 # First: gem install haml-coderay
 # require 'haml-coderay'
@@ -26,14 +44,27 @@ require 'susy'
 # activate :automatic_image_sizes
 
 ###
+# kramdown
+###
+
+set :markdown_engine, :kramdown
+set :markdown, :layout_engine => :haml, 
+               :tables => true, 
+               :autolink => true,
+               :smartypants => true
+
+###
 # Page command
 ###
 
 # Per-page layout changes:
 #
 # With no layout
-# page "/path/to/file.html", :layout => false
-#
+### With no layout
+page "404.html", directory_index: false, :layout => false
+page "robots.txt", directory_index: false, :layout => false
+page "humans.txt", directory_index: false, :layout => false
+
 # With alternative layout
 # page "/path/to/file.html", :layout => :otherlayout
 #
@@ -109,15 +140,35 @@ configure :build do
   # Use relative URLs
   # activate :relative_assets
 
+  ###
+  # middleman-favicon-maker		
+  ###
+
+  activate :favicon_maker, :icons => {
+    "favicon_base.svg" => [
+      { icon: "apple-touch-icon-152x152-precomposed.png" },
+      { icon: "apple-touch-icon-144x144-precomposed.png" },
+      { icon: "apple-touch-icon-114x114-precomposed.png" },
+      { icon: "apple-touch-icon-72x72-precomposed.png" },
+      { icon: "apple-touch-icon-precomposed.png", size: "57x57" },
+      { icon: "favicon.png", size: "16x16" },
+      { icon: "favicon.ico", size: "64x64,32x32,24x24,16x16" },
+    ]
+  }
+
+#  activate :favicon_maker,
+#    :favicon_maker_base_image => "favicon_base.svg"
+
+  ###
+  # middleman-smusher
+  ###
   # Compress PNGs after build
-  # First: gem install middleman-smusher
-  # require "middleman-smusher"
-  # activate :smusher
+  activate :smusher
+end # build
 
-  # Or use a different image path
-  # set :http_path, "/Content/images/"
-end
-
+###
+# middleman-deploy; requires rsync
+###
 # Requires middleman-deploy and rsync
 # activate :deploy do |deploy|
 #   deploy.method = :rsync
